@@ -70,11 +70,28 @@ void addFilesToXproj(std::string projectFileLocation, std::string sourceFilePath
         //PBXGroup section
         if (ZoneFileTools::fileBelongsInArea(fileExt, "PBXGroup"))
         {
-            const std::string PBXGroupHeader="/* Begin PBXGroup section */";
-            std::string initialPBXGroupWholeSection = trimBefore(transformedProjectContent, PBXGroupHeader);
-            initialPBXGroupWholeSection = trimPast(initialPBXGroupWholeSection, ");");
-            std::string transformedPBXGroupWhileSection = initialPBXGroupWholeSection + "    " + UUID2 + " /* " + sourceFileName + " */,\n";
-            transformedProjectContent = ReplaceString(transformedProjectContent, initialPBXGroupWholeSection, transformedPBXGroupWhileSection);
+//            const std::string PBXGroupHeader="/* Begin PBXGroup section */";
+//            std::string initialPBXGroupWholeSection = trimBefore(transformedProjectContent, PBXGroupHeader);
+//            initialPBXGroupWholeSection = trimPast(initialPBXGroupWholeSection, ");");
+//            std::string transformedPBXGroupWhileSection = initialPBXGroupWholeSection + "    " + UUID2 + " /* " + sourceFileName + " */,\n";
+//            transformedProjectContent = ReplaceString(transformedProjectContent, initialPBXGroupWholeSection, transformedPBXGroupWhileSection);
+//            
+            
+            //find main group uuid
+            const std::string PBXMainGroupString="mainGroup = ";
+            std::string MainGroupUUID =  trimPast(ReplaceString(trimBefore(transformedProjectContent, PBXMainGroupString), PBXMainGroupString, ""), ";");
+            
+            //find src uuid from main group
+            const std::string PBXMainGroupBlock = MainGroupUUID + " = {";
+            std::string PBXMainGroupBlockContent = trimPast(trimBefore(transformedProjectContent, PBXMainGroupBlock), "};");
+            std::string SrcUUID = PBXMainGroupBlockContent.substr( PBXMainGroupBlockContent.find(" /* src */,")-24, 24) ;
+            
+            //find src block from main src uuid
+            const std::string PBXSrcGroupBlock = SrcUUID + " /* src */ = {";
+            const std::string test =  trimPast(trimBefore(transformedProjectContent, PBXSrcGroupBlock), ");");
+            
+            transformedProjectContent = ReplaceString(transformedProjectContent, test, test + "    " + UUID2 + " /* " + sourceFileName + " */,\n");
+            
         }
         
         //PBXResourcesBuildPhase section

@@ -35,4 +35,16 @@ Run from terminal/script setting the -XCP argument along with one of the other t
 `$ ./XcodeProjAdder -XCP /Users/jimjohn/Products/TestProj.xcodeproj -RESTORE`
 
 
+**bash profile**
+
+```#xcodeadd
+
+xcodeaddfunc() {
+    #do things with parameters like $1 such as
+    XcodeProjAdder -XCP $1 -SCSV $2
+}
+alias xcodeadd=xcodeaddfunc
+```
+
+
 This project is made available under the DON'T BE A DICK PUBLIC LICENSE (http://www.dbad-license.org/)
